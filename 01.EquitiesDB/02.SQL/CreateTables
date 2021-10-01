@@ -1,0 +1,136 @@
+-- Table: public.exchange
+-- DROP TABLE public.exchange;
+
+CREATE TABLE public.exchange
+(
+    id integer NOT NULL,
+    mic character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    acronym character varying(20) COLLATE pg_catalog."default",
+    name character varying(200) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT exchange_pkey PRIMARY KEY (id),
+    CONSTRAINT exchange_mic_key UNIQUE (mic)
+
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+--ALTER TABLE public.exchange
+--    OWNER to username;
+
+
+-- Table: public.security
+-- DROP TABLE public.security;
+
+CREATE TABLE public.security
+(
+    id integer NOT NULL,
+    id_intrinio character varying(10) COLLATE pg_catalog."default" NOT NULL,
+    code character varying(3) COLLATE pg_catalog."default" NOT NULL,
+    currency character varying(3) COLLATE pg_catalog."default" NOT NULL,
+    ticker character varying(12) COLLATE pg_catalog."default" NOT NULL,
+    name character varying(200) COLLATE pg_catalog."default" NOT NULL,
+    figi character varying(12) COLLATE pg_catalog."default",
+    composite_figi character varying(12) COLLATE pg_catalog."default",
+    share_class_figi character varying(12) COLLATE pg_catalog."default",
+    exchange_id integer,
+    has_invalid_data boolean,
+    has_missing_company boolean,
+    CONSTRAINT security_pkey PRIMARY KEY (id),
+    CONSTRAINT security_id_intrinio_key UNIQUE (id_intrinio)
+,
+    CONSTRAINT security_exchange_id_fkey FOREIGN KEY (exchange_id)
+        REFERENCES public.exchange (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
+        NOT VALID
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+--ALTER TABLE public.security
+--    OWNER to username;
+
+
+-- Table: public.security_price
+-- DROP TABLE public.security_price;
+
+CREATE TABLE public.security_price
+(
+    id integer NOT NULL,
+    date date NOT NULL,
+    open double precision,
+    high double precision,
+    low double precision,
+    close double precision,
+    volume bigint,
+    adj_open double precision,
+    adj_high double precision,
+    adj_low double precision,
+    adj_close double precision,
+    adj_volume bigint,
+    intraperiod boolean NOT NULL,
+    --frequency NOT NULL,
+	--pricefrequency NOT NULL,
+    security_id integer NOT NULL,
+    CONSTRAINT security_price_pkey PRIMARY KEY (id)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+--ALTER TABLE public.security_price
+--    OWNER to username;
+
+
+-- Table: public.stock_adjustment
+-- DROP TABLE public.stock_adjustment;
+
+CREATE TABLE public.stock_adjustment
+(
+    id integer NOT NULL,
+    date date NOT NULL,
+    factor double precision NOT NULL,
+    dividend double precision,
+    split_ratio double precision,
+    security_id integer NOT NULL,
+    CONSTRAINT stock_adjustment_pkey PRIMARY KEY (id)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+--ALTER TABLE public.stock_adjustment
+--    OWNER to username;
+
+
+-- Table: public.company
+-- DROP TABLE public.company;
+
+CREATE TABLE public.company
+(
+    id integer NOT NULL,
+    name character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    cik character varying(10) COLLATE pg_catalog."default",
+    description character varying(2000) COLLATE pg_catalog."default",
+    company_url character varying(100) COLLATE pg_catalog."default",
+    sic character varying(4) COLLATE pg_catalog."default",
+    employees integer,
+    sector character varying(200) COLLATE pg_catalog."default",
+    industry_category character varying(200) COLLATE pg_catalog."default",
+    industry_group character varying(200) COLLATE pg_catalog."default",
+    security_id integer NOT NULL,
+    CONSTRAINT company_pkey PRIMARY KEY (id)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+--ALTER TABLE public.company
+--    OWNER to username;

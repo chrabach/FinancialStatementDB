@@ -1,0 +1,52 @@
+https://www.quickdatabasediagrams.com/
+
+
+Company
+-
+id PK INT
+security_id FK INT
+name varchar(64)
+cik varchar(50)
+sector varchar(50)
+industry_category varchar(50)
+industry_group varchar(50)
+company_url varchar(100)
+description varchar(2000)
+sic varchar(4)
+employees integer
+
+
+FinancialStatement
+-
+id INT PK FK  - FinancialStatementLineSequence.financial_statement_id
+name varchar(50)
+
+FinancialStatementLineSequence
+-
+id PK int
+financial_statement_id PK FK int 
+financial_statement_line_id INT PK FK - FinancialStatementFact.financial_statement_line_id
+sequence int
+
+FinancialStatementLine
+-
+id PK int
+name varchar(50)
+description varchar(200)
+
+
+FinancialStatementFact
+-
+id PK int 
+company_id INT PK FK - Company.id
+financial_statement_line_id PK FK integer
+fiscal_year integer
+fiscal_period varchar(50)
+filing_date date
+start_date date
+end_date date
+unit varchar(50)
+value double
+
+
+
